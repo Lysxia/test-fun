@@ -132,6 +132,14 @@ applyFun (CaseInteger _ f b r) x = applyBin r b (f x)
 applyFun (Absurd f) x = case f x of {}
 applyFun (ToShrink h) x = applyFun h x
 
+-- | Apply a binary function representation.
+applyFun2 :: (a :-> b :-> r) -> a -> b -> r
+applyFun2 h x y = h `applyFun` x `applyFun` y
+
+-- | Apply a ternary function representation.
+applyFun3 :: (a :-> b :-> c :-> r) -> a -> b -> c -> r
+applyFun3 h x y z = h `applyFun` x `applyFun` y `applyFun` z
+
 applyBranches :: r -> Branches x r -> x -> r
 applyBranches r Fail _ = r
 applyBranches r (Alt b1 _) (Left  x) = applyBranches r b1 x
