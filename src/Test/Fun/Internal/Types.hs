@@ -35,6 +35,7 @@ type ConName = String
 type ShowsPrec r = Int -> r -> String -> String
 
 -- | Dictionary with shrinker and printer.
+-- Used as part of the representation of higher-order functions with @(':->')@.
 data Concrete r = Concrete
   { shrinkC :: r -> [r]
   , showsPrecC :: ShowsPrec r
@@ -121,6 +122,7 @@ binAlt = BinAlt . Just
 
 --
 
+-- | Evaluate a representation into the function it represents.
 applyFun :: (a :-> r) -> a -> r
 applyFun (Const r) _ = r
 applyFun (CoApply _ w f h) x = applyFun (applyFun h (x (f w))) x
