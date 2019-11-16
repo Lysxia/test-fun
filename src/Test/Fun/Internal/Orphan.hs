@@ -19,6 +19,6 @@ module Test.Fun.Internal.Orphan where
 import Test.Fun.Internal.Types ((:->))
 import Test.Fun.Internal.Pretty (showsPrecFun)
 
--- | Pretty-printed orphan 'Show' instance.
+-- | Pretty-printed 'Show' instance.
 instance Show r => Show (a :-> r) where
   showsPrec = showsPrecFun showsPrec
