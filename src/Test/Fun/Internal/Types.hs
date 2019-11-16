@@ -40,6 +40,10 @@ data Concrete r = Concrete
   , showsPrecC :: ShowsPrec r
   }
 
+-- | Trivial shrinker and default printer.
+hardConcrete :: Show r => Concrete r
+hardConcrete = Concrete (\_ -> []) showsPrec
+
 infixr 1 :->
 
 -- | Testable representation of functions @(a -> r)@.
