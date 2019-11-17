@@ -236,6 +236,14 @@ instance MkFields U1 where
 
 -- ** Generic @CoArbitrary@
 
+-- | Generic implementation of 'coarbitrary'.
+--
+-- @
+-- -- Assuming MyData is a data type whose fields are all instances of CoArbitrary.
+--
+-- instance CoArbitrary MyData where
+--   coarbitrary = coarbitraryGeneric
+-- @
 coarbitraryGeneric :: forall a r gen. (Generic a, GCoArbitrary gen a) => Co gen a r
 coarbitraryGeneric = cogenGeneric (gsumCoarb @gen @(Rep a) (Proxy @r) ())
 
