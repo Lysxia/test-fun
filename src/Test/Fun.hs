@@ -43,7 +43,8 @@ module Test.Fun
 
 import Test.Fun.Internal.Types
   ((:->), applyFun, applyFun2, applyFun3, Concrete(..), ShowsPrec, FunName, TypeName)
-import Test.Fun.Internal.CoArbitrary
+import Test.Fun.Internal.CoGen
+import Test.Fun.Internal.Generic
 import Test.Fun.Internal.Pretty (showsPrecFun, indent)
 import Test.Fun.Internal.Shrink (shrinkFun)
 import Test.Fun.Internal.Orphan ()

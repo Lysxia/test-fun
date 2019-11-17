@@ -17,7 +17,8 @@ library
   hs-source-dirs:      src
   exposed-modules:
     Test.Fun
-    Test.Fun.Internal.CoArbitrary
+    Test.Fun.Internal.CoGen
+    Test.Fun.Internal.Generic
     Test.Fun.Internal.Orphan
     Test.Fun.Internal.Pretty
     Test.Fun.Internal.Shrink
