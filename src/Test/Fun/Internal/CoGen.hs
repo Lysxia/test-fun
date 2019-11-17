@@ -25,7 +25,7 @@ import Test.Fun.Internal.Types
 
 -- * Cogenerators
 
--- | A "cogenerator" of @a@ is a random generator of functions with domain @a@.
+-- | A \"cogenerator\" of @a@ is a random generator of functions with domain @a@.
 -- They are parameterized by a generator in the codomain @r@.
 --
 -- More generally, we can make cogenerators to generate functions of arbitrary arities;
@@ -78,7 +78,7 @@ type Co gen a r = gen r -> gen (a :-> r)
 -- newtype Apple = Apple { unApple :: Fruit }
 --
 -- cogenApple :: 'Co' Gen Apple r
--- cogenApple = 'cogenEmbed' "unApple" cogenFruit
+-- cogenApple = 'cogenEmbed' \"unApple\" cogenFruit
 -- @
 --
 -- If @cogenFruit@ generates a function that looks like:
@@ -99,13 +99,13 @@ cogenEmbed fn f cog g = (ToShrink . Apply fn f) <$> cog g
 --
 -- @
 -- cogenInteger :: 'Co' Gen 'Integer' r
--- cogenInteger = 'cogenIntegral' "Integer"
+-- cogenInteger = 'cogenIntegral' \"Integer\"
 --
 -- cogenInt :: 'Co' Gen 'Int' r
--- cogenInt = 'cogenIntegral' "Int"
+-- cogenInt = 'cogenIntegral' \"Int\"
 --
--- cogenWord :: Co Gen 'Word' r
--- cogenWord = 'cogenIntegral' "Word"
+-- cogenWord :: 'Co' Gen 'Word' r
+-- cogenWord = 'cogenIntegral' \"Word\"
 -- @
 cogenIntegral :: (Applicative gen, Integral a) => TypeName -> Co gen a r
 cogenIntegral tn = cogenIntegral' tn toInteger
