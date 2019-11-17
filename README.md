@@ -24,3 +24,11 @@ Separate packages integrate it with existing testing frameworks.
     type](https://hackage.haskell.org/package/QuickCheck-2.13.2/docs/Test-QuickCheck.html#g:14).
 
   + [*hedgehog-fn*](https://hackage.haskell.org/package/hedgehog-fn).
+
+## Internal module policy
+
+Modules under `Test.Fun.Internal` are not subject to any versioning policy.
+Breaking changes may apply to them at any time.
+
+If something in those modules seems useful, please report it or create a pull
+request to export it from an external module.
