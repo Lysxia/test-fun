@@ -38,6 +38,17 @@ testFunctionPretty = testGroup "pretty"
       $ "case a0 :: Integer of { -1 -> -1 ; 0 -> 0 ; 1 -> 1 ; _ -> 2 }"
       @=? prettyFun_
         (CaseInteger "Integer" id
-          (binAlt "0" (binAlt "1" BinEmpty BinEmpty) (binAlt "-1" BinEmpty BinEmpty)) "2")
+          (binAlt "0" (binAlt "1" z z) (binAlt "-1" z z)) "2")
+  , testCase "case-Integer-big"
+      $ "case a0 :: Integer of { "
+        ++ concat [ m ++ " -> " ++ m ++ " ; " | n <- [-3 .. 3 :: Int] ++ [6, 7], let m = show n ]
+        ++ "_ -> 2 }"
+      @=? prettyFun_
+        (CaseInteger "Integer" id
+          (binAlt "0"
+            (binAlt "1" (binAlt "2" z z) (binAlt "3" (binAlt "6" z z) (binAlt "7" z z)))
+            (binAlt "-1" (binAlt "-2" z z) (binAlt "-3" z z))) "2")
   ]
 
+z :: Bin r
+z = BinEmpty
