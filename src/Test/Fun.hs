@@ -1,4 +1,4 @@
-{-# LANGUAGE TypeFamilies, TypeOperators #-}
+{-# LANGUAGE TypeOperators #-}
 
 -- | Testable representation of (higher-order) functions.
 

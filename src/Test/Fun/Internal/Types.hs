@@ -3,12 +3,9 @@
     DeriveFoldable,
     DeriveTraversable,
     EmptyCase,
-    FlexibleContexts,
-    FlexibleInstances,
     GADTs,
     ScopedTypeVariables,
-    TypeOperators,
-    UndecidableInstances #-}
+    TypeOperators #-}
 
 -- | Representation of (higher-order) functions.
 --
