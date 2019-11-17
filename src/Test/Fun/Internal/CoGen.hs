@@ -129,25 +129,25 @@ genBin g = BinToShrink <$> self where
 --
 -- @
 -- -- Assume Chips is some concrete type.
--- concreteChips :: Concrete Chips
+-- concreteChips :: 'Concrete' Chips
 --
 -- -- Assume we have a cogenerator of Fish.
--- cogenFish :: forall r. Gen r -> Gen (Fish :-> r)
+-- cogenFish :: forall r. Gen r -> Gen (Fish ':->' r)
 --
 -- -- Then we can use cogenApply to construct this function
 -- -- to transform cogenerators of functions (Chips -> Fish).
 -- cogenX :: forall r.
 --   Chips ->
---   Gen ((Chips -> Fish) :-> r) ->
---   Gen ((Chips -> Fish) :-> r)
--- cogenX = cogenApply concreteChips id . cogenFish
+--   Gen ((Chips -> Fish) ':->' r) ->
+--   Gen ((Chips -> Fish) ':->' r)
+-- cogenX = 'cogenApply' concreteChips 'id' '.' cogenFish
 --
--- -- If we have some inputs
+-- -- If we have some inputs...
 -- chips1, chips2, chips3 :: Chips
 --
--- -- We can construct a cogenerator of functions by iterating cogenX.
--- cogenF :: forall r. Gen r -> Gen ((Chips -> Fish) :-> r)
--- cogenF = cogenX chips1 . cogenX chips2 . cogenX chips3 . cogenConst
+-- -- ... we can construct a cogenerator of functions by iterating cogenX.
+-- cogenF :: forall r. Gen r -> Gen ((Chips -> Fish) ':->' r)
+-- cogenF = cogenX chips1 '.' cogenX chips2 '.' cogenX chips3 '.' 'cogenConst'
 -- @
 cogenApply :: Functor gen =>
   Concrete a0 {- ^ Shrink and show @a0@. -} ->
