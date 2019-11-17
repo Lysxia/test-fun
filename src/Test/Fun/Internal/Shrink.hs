@@ -14,6 +14,8 @@
 
 module Test.Fun.Internal.Shrink where
 
+import Control.Applicative ((<|>))
+
 import Test.Fun.Internal.Types
 
 -- | Simplify function.
@@ -26,18 +28,16 @@ shrinkFun shrinkR = go where
   go (CoApply c a f h) = fmap (coapply c a f) (shrinkFun go h) ++ fmap (\a' -> CoApply c a' f h) (shrinkC c a)
   go (Apply fn f h) = apply fn f <$> go h
   go (Case tn f b r)
-    =  Const r
-    :  fmap (\b' -> case_ tn f b' r) (shrinkBranches shrinkR b)
+    =  maybeConst (firstBranches Just b)
+    ++ fmap (\b' -> case_ tn f b' r) (shrinkBranches shrinkR b)
     ++ fmap (\r' -> Case tn f b r') (shrinkR r)
   go (CaseInteger tn f b r)
-    =  root b
-    :  fmap (\b' -> caseInteger tn f b' r) (shrinkBin shrinkR b)
+    =  maybeConst (firstBin Just b)
+    ++ fmap (\b' -> caseInteger tn f b' r) (shrinkBin shrinkR b)
     ++ fmap (\r' -> CaseInteger tn f b r') (shrinkR r)
-   where
-    root BinEmpty = Const r
-    root (BinAlt Nothing _ _) = Const r
-    root (BinAlt (Just r') _ _) = Const r'
-    root (BinToShrink b') = root b'
+
+  maybeConst (Just r) = [Const r]
+  maybeConst Nothing = []
 
 shrinkBranches :: forall x r. (r -> [r]) -> Branches x r -> [Branches x r]
 shrinkBranches shrinkR = go where
@@ -70,3 +70,35 @@ binToShrink (BinToShrink b) = b  -- Should not happen, but no problem if it does
 shrinkMaybe :: (r -> [r]) -> Maybe r -> [Maybe r]
 shrinkMaybe _ Nothing = []
 shrinkMaybe shrinkR (Just r) = Nothing : fmap Just (shrinkR r)
+
+-- Try to find some value in the image of a given function @(a :-> r)@,
+-- but don't try too hard. Stop at 'ToShrink' nodes because these
+-- trees can be big/infinite.
+
+firstFun :: forall a r t. (r -> Maybe t) -> (a :-> r) -> Maybe t
+firstFun firstR h0 = case h0 of
+  ToShrink _ -> Nothing
+  Absurd _ -> Nothing
+  Const r -> firstR r
+  CoApply _ _ _ h -> firstFun (firstFun firstR) h
+  Apply _ _ h -> firstFun firstR h
+  Case _ _ b _ -> firstBranches firstR b
+  CaseInteger _ _ b _ -> firstBin firstR b
+
+firstBranches :: forall x r t. (r -> Maybe t) -> Branches x r -> Maybe t
+firstBranches firstR h = case h of
+  Alt b1 b2 -> firstBranches firstR b1 <|> firstBranches firstR b2
+  Fail -> Nothing
+  Pat _ d -> firstField firstR d
+
+firstField :: forall x r t. (r -> Maybe t) -> Fields x r -> Maybe t
+firstField firstR d = case d of
+  NoField h -> firstR h
+  Field d' -> firstField (firstFun firstR) d'
+
+firstBin :: forall r t. (r -> Maybe t) -> Bin r -> Maybe t
+firstBin firstR h = case h of
+  BinEmpty -> Nothing
+  BinAlt (Just r) _ _ -> firstR r
+  BinAlt Nothing l r -> firstBin firstR l <|> firstBin firstR r
+  BinToShrink _ -> Nothing
