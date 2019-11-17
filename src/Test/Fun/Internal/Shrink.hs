@@ -59,7 +59,9 @@ shrinkBin shrinkR = go where
     BinEmpty
       :  fmap (\r' -> BinAlt r' b0 b1) (shrinkMaybe shrinkR r)
       ++ fmap (\b0' -> BinAlt r b0' b1) (go b0)
+      ++ [b0]
       ++ fmap (\b1' -> BinAlt r b0 b1') (go b1)
+      ++ [b1]
   go (BinToShrink b) = go b' ++ [b'] where b' = binToShrink b
 
 binToShrink :: forall r. Bin r -> Bin r
