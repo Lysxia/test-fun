@@ -151,14 +151,14 @@ applyBin :: r -> Bin r -> Integer -> r
 applyBin r BinEmpty _ = r
 applyBin r (BinAlt r0 b0 b1) x = case compare x 0 of
   EQ -> fromMaybe r r0
-  GT -> applyBin' r b0 (x - 1)
-  LT -> applyBin' r b1 (- x - 1)
+  GT -> applyBin' r b0 x
+  LT -> applyBin' r b1 (- x)
 applyBin r (BinToShrink b) x = applyBin r b x
 
 applyBin' :: r -> Bin r -> Integer -> r
 applyBin' r BinEmpty _ = r
 applyBin' r (BinAlt r0 b0 b1) x
-  | x == 0 = fromMaybe r r0
+  | x == 1 = fromMaybe r r0
   | x `mod` 2 == 0 = applyBin' r b0 (x `div` 2)
   | otherwise      = applyBin' r b1 (x `div` 2)
 applyBin' r (BinToShrink b) x = applyBin' r b x
