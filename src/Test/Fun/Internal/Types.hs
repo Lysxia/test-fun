@@ -162,9 +162,61 @@ applyBin' :: r -> Bin r -> Integer -> r
 applyBin' r BinEmpty _ = r
 applyBin' r (BinAlt r0 b0 b1) x
   | x == 0 = fromMaybe r r0
-  | x `div` 2 == 0 = applyBin' r b0 (x `div` 2)
+  | x `mod` 2 == 0 = applyBin' r b0 (x `div` 2)
   | otherwise      = applyBin' r b1 (x `div` 2)
 applyBin' r (BinToShrink b) x = applyBin' r b x
+
+--
+
+-- | Remove 'ToShrink' nodes from evaluating a given argument @a@.
+clearFun :: (r -> r) -> a -> (a :-> r) -> (a :-> r)
+clearFun clearR x h0 = case h0 of
+  ToShrink h -> clearFun clearR x h
+  Const r -> Const (clearR r)
+  Absurd f -> Absurd f
+  CoApply c w f h -> CoApply c w f (clearFun (clearFun clearR x) (x (f w)) h)
+  Apply fn f h -> Apply fn f (clearFun clearR (f x) h)
+  Case tn f b r -> case clearBranches clearR b (f x) of
+    Nothing -> Case tn f b (clearR r)
+    Just b' -> Case tn f b' r
+  CaseInteger tn f b r -> case clearBin clearR b (f x) of
+    Nothing -> CaseInteger tn f b (clearR r)
+    Just b' -> CaseInteger tn f b' r
+
+clearBranches :: forall x r. (r -> r) -> Branches x r -> x -> Maybe (Branches x r)
+clearBranches clearR = go where
+  go :: forall z. Branches z r -> z -> Maybe (Branches z r)
+  go Fail _ = Nothing
+  go (Alt b1 b2) (Left y) = (\b1' -> Alt b1' b2) <$> go b1 y
+  go (Alt b1 b2) (Right y) = Alt b1 <$> go b2 y
+  go (Pat cn d) x = Just (Pat cn (clearFields clearR d x))
+
+clearFields :: (r -> r) -> Fields x r -> x -> Fields x r
+clearFields clearR d0 w = case d0 of
+  NoField r -> NoField (clearR r)
+  Field d | (x, y) <- w -> Field (clearFields (clearFun clearR y) d x)
+
+clearBin :: (r -> r) -> Bin r -> Integer -> Maybe (Bin r)
+clearBin clearR b' x = case b' of
+  BinEmpty -> Nothing
+  BinAlt r0 b0 b1 -> case compare x 0 of
+    EQ -> case r0 of
+      Just r -> Just (BinAlt (Just (clearR r)) b0 b1)
+      Nothing -> Nothing
+    GT -> clearBin' clearR (x - 1) b0
+    LT -> clearBin' clearR (- x - 1) b1
+  BinToShrink b -> clearBin clearR b x
+
+clearBin' :: (r -> r) -> Integer -> Bin r -> Maybe (Bin r)
+clearBin' clearR = go where
+  go _ BinEmpty = Nothing
+  go x (BinAlt r0 b0 b1)
+    | x == 0 = case r0 of
+      Just r -> Just (BinAlt (Just (clearR r)) b0 b1)
+      Nothing -> Nothing
+    | x `mod` 2 == 0 = (\b0' -> BinAlt r0 b0' b1) <$> go (x `div` 2) b0
+    | otherwise = BinAlt r0 b0 <$> go (x `div` 2) b1
+  go x (BinToShrink b) = go x b
 
 --
 
