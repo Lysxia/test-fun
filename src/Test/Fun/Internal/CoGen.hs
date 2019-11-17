@@ -125,23 +125,37 @@ genBin g = BinToShrink <$> self where
 -- This is parameterized by a way to generate, shrink, and show values of
 -- type @a@ or, more generally, some representation @a0@ of values of type @a@.
 --
--- === __Implementation note__
---
--- The cogenerator of @b@ is made monomorphic only to keep the type of
--- 'cogenApply' at rank 1. But really, don't pay attention to the last type
--- argument of 'Co'.
+-- === __Example__
 --
 -- @
--- 'cogenApply' :: ... -> Co gen b _ -> gen ((a -> b) :-> _) -> gen ((a -> b) :-> _)
+-- -- Assume Chips is some concrete type.
+-- concreteChips :: Concrete Chips
+--
+-- -- Assume we have a cogenerator of Fish.
+-- cogenFish :: forall r. Gen r -> Gen (Fish :-> r)
+--
+-- -- Then we can use cogenApply to construct this function
+-- -- to transform cogenerators of functions (Chips -> Fish).
+-- cogenX :: forall r.
+--   Chips ->
+--   Gen ((Chips -> Fish) :-> r) ->
+--   Gen ((Chips -> Fish) :-> r)
+-- cogenX = cogenApply concreteChips id . cogenFish
+--
+-- -- If we have some inputs
+-- chips1, chips2, chips3 :: Chips
+--
+-- -- We can construct a cogenerator of functions by iterating cogenX.
+-- cogenF :: forall r. Gen r -> Gen ((Chips -> Fish) :-> r)
+-- cogenF = cogenX chips1 . cogenX chips2 . cogenX chips3 . cogenConst
 -- @
 cogenApply :: Functor gen =>
   Concrete a0 {- ^ Shrink and show @a0@. -} ->
-  a0          {- ^ Value to inspect.     -} ->
   (a0 -> a)   {- ^ Reify to value @a@ (@id@ for simple data types). -} ->
-  Co gen b ((a -> b) :-> r) {- ^ Cogenerator of @b@. -} ->
-  gen ((a -> b) :-> r) ->
+  a0          {- ^ Value to inspect.     -} ->
+  gen (b :-> (a -> b) :-> r) {- ^ Cogenerator of @b@ -} ->
   gen ((a -> b) :-> r)
-cogenApply w x fromRepr cb gf = CoApply w x fromRepr <$> cb gf
+cogenApply w fromRepr x gr = CoApply w x fromRepr <$> gr
 
 -- | The trivial cogenerator which generates a constant function.
 cogenConst :: Functor gen => Co gen a r
@@ -161,4 +175,4 @@ cogenFun w ga fromRepr cb gr = self where
     ma <- ga
     case ma of
       Nothing -> cogenConst gr
-      Just a -> cogenApply w a fromRepr cb self
+      Just a -> cogenApply w fromRepr a (cb self)
