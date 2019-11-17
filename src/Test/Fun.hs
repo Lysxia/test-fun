@@ -21,6 +21,8 @@ module Test.Fun
   , cogenIntegral
   , cogenIntegral'
   , cogenFun
+  , cogenApply
+  , cogenConst
   , Concrete(..)
   , cogenGeneric
   , (:+)(..)
@@ -36,6 +38,7 @@ module Test.Fun
     -- ** Generic classes
   , GCoGen()
   , GCoArbitrary()
+  , GSumCo
   ) where
 
 import Test.Fun.Internal.Types
