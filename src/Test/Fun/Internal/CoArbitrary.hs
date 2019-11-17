@@ -98,8 +98,17 @@ type Co gen a r = gen r -> gen (a :-> r)
 -- newtype Apple = Apple { unApple :: Fruit }
 --
 -- cogenApple :: 'Co' Gen Apple r
--- cogenApple = 'cogenEmbed' cogenFruit
+-- cogenApple = 'cogenEmbed' "unApple" cogenFruit
 -- @
+--
+-- If @cogenFruit@ generates a function that looks like:
+--
+-- > \x -> case x :: Fruit of { ... }
+--
+-- then @cogenApple@ will look like:
+--
+-- > \x -> case unApple x :: Fruit of { ... }
+--
 cogenEmbed :: Functor gen => FunName -> (a -> b) -> Co gen b r -> Co gen a r
 cogenEmbed fn f cog g = (ToShrink . Apply fn f) <$> cog g
 

@@ -35,6 +35,20 @@ showsPrecFun showsPrec_ _ h = s 0 where
   s = sparens 0 ("\\" ~% sVar defVar % " -> " ~% unExpr_ (tFun (tShow_ showsPrec_) h defCtx))
 
 -- | Break up lines after braces and indent.
+--
+-- === __Example__
+--
+-- Input:
+--
+-- > \x -> case x :: Either _ _ of { Left x1 -> case x1 of { Left x2 -> () ; Right x2 -> case x2 of {} } ; Right x1 -> () }
+--
+-- Output:
+--
+-- > \x -> case x :: Either _ _ of {
+-- >   Left x1 -> case x1 of {
+-- >     Left x2 -> () ;
+-- >     Right x2 -> case x2 of {} } ;
+-- >   Right x1 -> () }
 indent :: String -> String
 indent = go 0 where
   go !n ('{' : '}' : xs) = '{' : '}' : go n xs
