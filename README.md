@@ -8,7 +8,7 @@ Separate packages integrate it with existing testing frameworks.
 
 - QuickCheck: [quickcheck-higherorder](https://github.com/Lysxia/quickcheck-higherorder)
 
-- Hedgehog: TODO
+- Hedgehog: [hedgehog-higherorder](https://github.com/Lysxia/hedgehog-higherorder)
 
 ## References
 
@@ -19,11 +19,11 @@ Separate packages integrate it with existing testing frameworks.
 
   Other implementations based on that paper can be found in:
 
-  + [*QuickCheck*](https://hackage.haskell.org/package/QuickCheck-2.13.2); in
+  + [QuickCheck](https://hackage.haskell.org/package/QuickCheck-2.13.2); in
     particular see the [`Fun`
     type](https://hackage.haskell.org/package/QuickCheck-2.13.2/docs/Test-QuickCheck.html#g:14).
 
-  + [*hedgehog-fn*](https://hackage.haskell.org/package/hedgehog-fn).
+  + [hedgehog-fn](https://hackage.haskell.org/package/hedgehog-fn).
 
 ## Internal module policy
 
