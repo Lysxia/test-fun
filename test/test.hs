@@ -2,6 +2,8 @@
 
 module Main where
 
+import Data.Foldable (for_)
+
 import Test.Tasty
 import Test.Tasty.HUnit
 
@@ -14,6 +16,7 @@ main = defaultMain tests
 tests :: TestTree
 tests = testGroup "tests"
   [ testFunctionPretty
+  , testFunctionApply
   ]
 
 prettyFun_ :: (a :-> String) -> String
@@ -41,14 +44,25 @@ testFunctionPretty = testGroup "pretty"
           (binAlt "0" (binAlt "1" z z) (binAlt "-1" z z)) "2")
   , testCase "case-Integer-big"
       $ "case a0 :: Integer of { "
-        ++ concat [ m ++ " -> " ++ m ++ " ; " | n <- [-3 .. 3 :: Int] ++ [6, 7], let m = show n ]
-        ++ "_ -> 2 }"
-      @=? prettyFun_
-        (CaseInteger "Integer" id
-          (binAlt "0"
-            (binAlt "1" (binAlt "2" z z) (binAlt "3" (binAlt "6" z z) (binAlt "7" z z)))
-            (binAlt "-1" (binAlt "-2" z z) (binAlt "-3" z z))) "2")
+        ++ concat [ m ++ " -> " ++ m ++ " ; " | n <- [-7 .. 7 :: Int], let m = show n ]
+        ++ "_ -> 22 }"
+      @=? prettyFun_ bigFun
   ]
+
+testFunctionApply :: TestTree
+testFunctionApply = testCase "apply" $ do
+  for_ ([-7 .. 7]) $ \i -> do
+    show i @=? applyFun bigFun i
+
+bigFun :: Integer :-> String
+bigFun = CaseInteger "Integer" id
+  (binAlt "0"
+    (binAlt "1"
+      (binAlt "2" (binAlt "4" z z) (binAlt "6" z z))
+      (binAlt "3" (binAlt "5" z z) (binAlt "7" z z)))
+    (binAlt "-1"
+      (binAlt "-2" (binAlt "-4" z z) (binAlt "-6" z z))
+      (binAlt "-3" (binAlt "-5" z z) (binAlt "-7" z z)))) "22"
 
 z :: Bin r
 z = BinEmpty

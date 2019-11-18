@@ -20,6 +20,7 @@
 
 module Test.Fun.Internal.Pretty where
 
+import Data.Bits (setBit)
 import Control.Applicative (liftA2)
 import Data.List (sortBy)
 import Data.Ord (comparing)
@@ -239,6 +240,12 @@ tBin prettyR b _ vs =
   fmap (\(n, e) -> EBranch (eInt n) e)
     (sortBy (comparing fst) (tBin' prettyR b vs))
 
+data Sign = Pos | Neg
+
+resign :: Sign -> Integer -> Integer
+resign Pos x = x
+resign Neg x = - x
+
 tBin' :: (r -> C Expr) -> Bin r -> C [(Integer, Expr)]
 tBin' prettyR b vs = go_ b where
   go_ (BinToShrink _) = []
@@ -247,14 +254,17 @@ tBin' prettyR b vs = go_ b where
     tr = case r_ of
       Nothing -> []
       Just r -> [(0, prettyR r vs)]
-    tb01 = (go 1 1 b0 . go (-1) (-1) b1) []
-  go _ _ (BinToShrink _) k = k
-  go _ _ BinEmpty k = k
-  go i n (BinAlt r_ b0 b1) k = tr ++ tb01 where
+    tb01 = (go Pos 0 0 b0 . go Neg 0 0 b1) []
+
+  go _ !_ !_ (BinToShrink _) k = k
+  go _ _ _ BinEmpty k = k
+  go z i n (BinAlt r_ b0 b1) k = tr ++ tb01 where
+    i' = i + 1
+    n' = setBit n i
     tr = case r_ of
       Nothing -> []
-      Just r -> [(n, prettyR r vs)]
-    tb01 = (go i (2 * n) b0 . go i (2 * n + i) b1) k
+      Just r -> [(resign z n', prettyR r vs)]
+    tb01 = (go z i' n b0 . go z i' n' b1) k
 
 ellidedBin :: Bin r -> Bool
 ellidedBin (BinToShrink _) = True
