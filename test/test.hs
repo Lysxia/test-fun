@@ -1,12 +1,19 @@
-{-# LANGUAGE TypeApplications, TypeOperators #-}
+{-# LANGUAGE
+    DeriveGeneric,
+    RankNTypes,
+    TypeApplications,
+    TypeOperators #-}
 
 module Main where
 
 import Data.Foldable (for_)
+import GHC.Generics (Generic)
 
 import Test.Tasty
 import Test.Tasty.HUnit
 
+import Test.Fun.Internal.CoGen (Co)
+import Test.Fun.Internal.Generic ((:+)(..), cogenGeneric)
 import Test.Fun.Internal.Pretty
 import Test.Fun.Internal.Types
 
@@ -66,3 +73,28 @@ bigFun = CaseInteger "Integer" id
 
 z :: Bin r
 z = BinEmpty
+
+-- Examples
+
+data These a b = This a | That b | Those a b
+  deriving Generic
+
+cogenThese ::
+  forall a b gen.
+  Applicative gen =>
+  (forall r. Co gen a r) ->
+  (forall r. Co gen b r) ->
+  (forall r. Co gen (These a b) r)
+cogenThese cogenA cogenB = cogenGeneric cs where
+  cs = cogenA :+ cogenB :+ (cogenA . cogenB) :+ ()
+
+data Small a = Zero | One a | Two a a
+  deriving Generic
+
+cogenSmall ::
+  forall a gen.
+  Applicative gen =>
+  (forall r. Co gen a r) ->
+  (forall r. Co gen (Small a) r)
+cogenSmall cogenA = cogenGeneric cs where
+  cs = id :+ cogenA :+ (cogenA . cogenA) :+ ()
