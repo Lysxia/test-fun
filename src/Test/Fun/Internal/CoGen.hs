@@ -63,7 +63,8 @@ import Test.Fun.Internal.Types
 -- types to avoid making types higher-ranked.
 type Co gen a r = gen r -> gen (a :-> r)
 
--- | Cogenerator for a type @a@, given an embedding function @(a -> b)@,
+-- | Cogenerator for a type @a@ from a cogenerator for @b@,
+-- given an embedding function @(a -> b)@,
 -- and a name for that function (used for pretty-printing).
 --
 -- === __Example__
@@ -71,7 +72,7 @@ type Co gen a r = gen r -> gen (a :-> r)
 -- The common usage is to construct cogenerators for newtypes.
 --
 -- @
--- -- Given
+-- -- Given some cogenerator of Fruit
 -- cogenFruit :: 'Co' Gen Fruit r
 --
 -- -- Wrap Fruit in a newtype
@@ -83,9 +84,10 @@ type Co gen a r = gen r -> gen (a :-> r)
 --
 -- If @cogenFruit@ generates a function that looks like:
 --
--- > \x -> case x :: Fruit of { ... }
+-- > \y -> case y :: Fruit of { ... }
 --
--- then @cogenApple@ will look like:
+-- then @cogenApple@ will look like this,
+-- where @y@ is replaced with @unApple x@:
 --
 -- > \x -> case unApple x :: Fruit of { ... }
 --
