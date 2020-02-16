@@ -166,8 +166,8 @@ cogenConst g = Const <$> g
 -- @Nothing@.
 cogenFun :: Monad gen =>
   Concrete a0    {- ^ Shrink and show @a0@.      -} ->
-  gen (Maybe a0) {- ^ Generate value to inspect. -} ->
-  (a0 -> a)      {- ^ Reify to value @a@ (@id@ for simple data types). -} ->
+  gen (Maybe a0) {- ^ Generate representations of argument values. -} ->
+  (a0 -> a)      {- ^ Interpret a representation @a0@ into a value @a@ (@id@ for simple data types). -} ->
   Co gen b ((a -> b) :-> r) {- ^ Cogenerator of @b@. -} ->
   Co gen (a -> b) r
 cogenFun w ga fromRepr cb gr = self where
