@@ -17,19 +17,24 @@ module Test.Fun
 
     -- * Cogenerators
   , Co
+
+    -- ** Main combinators
   , cogenEmbed
   , cogenIntegral
   , cogenIntegral'
   , cogenFun
-  , cogenApply
-  , cogenConst
   , Concrete(..)
-  , cogenGeneric
-  , (:+)(..)
-  , cogenList
-
   , FunName
   , TypeName
+
+    -- ** Generic cogenerators
+  , cogenGeneric
+  , (:+)(..)
+
+    -- ** Secondary combinators
+  , cogenConst
+  , cogenList
+  , cogenApply
 
     -- ** @CoArbitrary@
   , CoArbitrary(..)
