@@ -15,7 +15,7 @@ Separate packages integrate it with existing testing frameworks.
 This package defines a type of *testable functions* `a :-> r`,
 representing functions `a -> r`.
 
-- To interpret a testable functions into a function `a -> r`,
+- To interpret a testable function into a function `a -> r`,
   use `applyFun :: (a :-> r) -> a -> r`.
 
 - To pretty-print a testable function,
@@ -49,8 +49,8 @@ To define a cogenerator, the provided combinators cover the following scenarios.
 
 #### Newtypes and embeddings
 
-If you have a newtype `A` around some old type `B`, and there
-is a cogenerator of `B`:
+If we have a newtype `A` around some old type `B`, and we also have
+a cogenerator of `B`:
 
 ```haskell
 newtype A = MkA { unA :: B }
@@ -65,11 +65,11 @@ cogenEmbed "unA" unA cogenB :: Co Gen A r
 ```
 
 This is actually not restricted to newtypes:
-any "embedding" function `A -> B` can be used to convert a
+any "embedding" function `A -> B` (here, `unA`) can be used to convert a
 `Co Gen B r` to a `Co Gen A r`.
 (Yes, there is a contravariant functor hiding there.)
 Note that `cogenEmbed` expects a name for that function as a `String`
-in its first argument.
+in its first argument, for pretty-printing.
 
 #### Generic data types
 
