@@ -1,7 +1,7 @@
 # Testable functions
 
 A representation of functions for property testing, featuring
-random generation, shrinking and printing.
+random generation, shrinking, and printing.
 
 This package implements the core functionality.
 Separate packages integrate it with existing testing frameworks.
