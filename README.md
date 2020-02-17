@@ -34,18 +34,19 @@ The type of cogenerators of `a` is `Co Gen a r`,
 where `Gen` is QuickCheck's monad of random generators
 and `r` is an abstract parameter (it's really `forall r. Co Gen a r`).
 
+That type `Co Gen a r` is literally defined as a type synonym of
+`Gen r -> Gen (a :-> r)`.
+Given both a cogenerator `c :: Co Gen a r`, and a generator `g :: Gen r`,
+we can construct the generator of testable functions `c g :: Gen (a :-> r)`.
+
 (Users can just think of `Co Gen` as a whole,
 even though the implementation defines a more general `Co`
 which may be applied to any monad.
 Similarly, the parameter `r` can be ignored most of the time;
 it matters to cogenerators of parameterized types.)
 
-That type `Co Gen a r` is literally defined as a type synonym of
-`Gen r -> Gen (a :-> r)`.
-Given both a cogenerator `c :: Co Gen a r`, and a generator `g :: Gen r`,
-we can construct the generator of testable functions `c g :: Gen (a :-> r)`.
-
-To define a cogenerator, the provided combinators cover the following scenarios.
+There are several combinators to define cogenerators,
+covering the following scenarios.
 
 #### Newtypes and embeddings
 
@@ -116,7 +117,7 @@ To a first approximation, the function `cogenFun` transforms
 a cogenerator of `b` into a cogenerator of `(a -> b)`, provided
 a way to generate, shrink, and show `a`.
 
-This is actually generalized by allowing one to provide
+This is actually generalized further by allowing one to provide
 a way to generate, shrink, and show a *representation* `a0` of `a`,
 which can be equal to `a` in simple cases,
 but this generalization makes it possible to generate
@@ -129,7 +130,8 @@ the function `cogenFun` takes the following arguments, in this order:
    representations `a0`;
 2. `Gen (Maybe a0)`: a random generator of `a0`, it must generate `Nothing`
    once in a while (say with probability 1/5 if you have no clue);
-3. `a0 -> a`: a function from representations to actual values;
+3. `a0 -> a`: a function from representations to actual values
+   (`id` in simple cases);
 4. `forall r. Co Gen b r`: a cogenerator of `b`.
 
 ## References
