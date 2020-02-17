@@ -1,6 +1,8 @@
 {-# LANGUAGE TypeOperators #-}
 
 -- | Testable representation of (higher-order) functions.
+--
+-- See the README for an introduction.
 
 module Test.Fun
   ( -- * Testable functions
