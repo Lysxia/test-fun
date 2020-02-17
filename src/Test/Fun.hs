@@ -32,8 +32,8 @@ module Test.Fun
   , (:+)(..)
 
     -- ** Secondary combinators
-  , cogenConst
   , cogenList
+  , cogenConst
   , cogenApply
 
     -- ** @CoArbitrary@

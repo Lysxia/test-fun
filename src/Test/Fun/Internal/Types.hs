@@ -49,7 +49,7 @@ infixr 1 :->
 -- This representation supports random generation, shrinking, and printing,
 -- for property testing with QuickCheck or Hedgehog.
 --
--- Higher-order functions can be represented ('Test.Fun.cogenFun').
+-- Higher-order functions can be represented.
 data a :-> r where
   -- | Constant function, ignore the argument.
   Const :: r -> a :-> r
