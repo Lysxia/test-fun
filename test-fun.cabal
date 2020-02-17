@@ -7,7 +7,7 @@ license:             MIT
 license-file:        LICENSE
 author:              Li-yao Xia
 maintainer:          lysxia@gmail.com
-copyright:           2019 Li-yao Xia
+copyright:           2020 Li-yao Xia
 category:            Testing
 build-type:          Simple
 extra-source-files:  README.md
