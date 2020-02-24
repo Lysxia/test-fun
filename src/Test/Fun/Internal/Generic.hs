@@ -247,6 +247,7 @@ instance MkFields U1 where
 coarbitraryGeneric :: forall a r gen. (Generic a, GCoArbitrary gen a) => Co gen a r
 coarbitraryGeneric = cogenGeneric (gsumCoarb @gen @(Rep a) (Proxy @r) ())
 
+-- | Constraint for 'coarbitraryGeneric'.
 class    (GCoGen a, Applicative gen, GSumCoArb gen (Rep a)) => GCoArbitrary gen a
 instance (GCoGen a, Applicative gen, GSumCoArb gen (Rep a)) => GCoArbitrary gen a
 
