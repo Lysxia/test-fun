@@ -1,4 +1,5 @@
-# Testable functions
+# Testable functions [![Hackage](https://img.shields.io/hackage/v/test-fun.svg)](https://hackage.haskell.org/package/test-fun) [![Build Status](https://travis-ci.com/Lysxia/test-fun.svg)](https://travis-ci.com/Lysxia/test-fun)
+
 
 A representation of functions for property testing, featuring
 random generation, shrinking, and printing.
