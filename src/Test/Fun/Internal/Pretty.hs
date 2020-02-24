@@ -24,6 +24,7 @@ import Data.Bits (setBit)
 import Control.Applicative (liftA2)
 import Data.List (sortBy)
 import Data.Ord (comparing)
+import Data.Semigroup (Semigroup((<>)))
 
 import Test.Fun.Internal.Types
   ((:->)(..), Branches(..), Fields(..), Bin(..), ConName, FunName, TypeName, Concrete(..), ShowsPrec)

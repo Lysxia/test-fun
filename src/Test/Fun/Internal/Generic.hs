@@ -30,10 +30,10 @@ import Data.Functor.Identity (Identity(..))
 import Data.Kind (Type)
 import Data.Monoid (Sum(..))
 import Data.Proxy (Proxy(..))
+import Data.Typeable (Typeable, typeRep, typeRepTyCon, tyConName)
 import Data.Void (Void)
 import Data.Word (Word)
 import GHC.Generics
-import Type.Reflection (Typeable, typeRep, typeRepTyCon, tyConName)
 
 import Test.Fun.Internal.Types
 import Test.Fun.Internal.CoGen
@@ -119,7 +119,7 @@ instance {-# OVERLAPPING #-} Typeable_ f => Typeable_ (f a) where
   shortTypeName_ = shortTypeName_ @_ @f . (' ' :) . ('_' :)
 
 instance Typeable a => Typeable_ a where
-  shortTypeName_ = ((++) . tyConName . typeRepTyCon) (typeRep @a)
+  shortTypeName_ = ((++) . tyConName . typeRepTyCon) (typeRep (Proxy @a))
 
 -- *** Type-level functions on generic representations
 

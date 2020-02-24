@@ -23,6 +23,7 @@ module Test.Fun.Internal.Types where
 
 import Data.Maybe (fromMaybe)
 import Data.Void (Void)
+import Data.Monoid ((<>))
 
 -- | Name of a function.
 type FunName = String
