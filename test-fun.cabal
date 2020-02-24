@@ -1,7 +1,9 @@
 name:                test-fun
 version:             0.1.0.0
-synopsis: Generate, shrink, and show functions for testing higher-order properties
-description:         See README.
+synopsis: Testable functions
+description:
+  Generate, shrink, and show functions for testing higher-order properties.
+  See README.
 homepage:            https://github.com/Lysxia/test-fun#readme
 license:             MIT
 license-file:        LICENSE
